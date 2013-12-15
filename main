@@ -40,4 +40,3 @@ p1.joinNetwork(options[:bootstrap_ip], options[:node_id], 0)
 puts('POOP')
 #p1.leaveNetwork(options[:node_id])
 $t1.join
-#ewfuihewfuhn
