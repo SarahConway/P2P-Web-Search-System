@@ -11,6 +11,3 @@ class Hashing
   end
 
 end
-
-
-#uihefbiuehfiuh

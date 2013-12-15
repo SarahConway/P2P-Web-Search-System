@@ -5,7 +5,7 @@ require './routing'
 require './indexing'
 
 class Peer
-   #uihikuj
+
   def initialize(id, port)
     @hash = Hashing.new
     @id = @hash.hashCode(id)
