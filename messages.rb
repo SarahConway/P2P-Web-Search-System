@@ -2,13 +2,13 @@ require 'json'
 
 class Messages
 
-  def JOINING_NETWORK(node_id, ip_address)
-    message = {:type => 'JOINING_NETWORK', :node_id => node_id, :ip_address => ip_address}
+  def JOINING_NETWORK(node_id, target_id, ip_address)
+    message = {:type => 'JOINING_NETWORK', :node_id => node_id, :target_id => target_id, :ip_address => ip_address}
     return message.to_json
   end
 
-  def JOINING_NETWORK_RELAY(node_id, gateway_id)
-    message = {:type => 'JOINING_NETWORK_RELAY', :node_id => node_id, :gateway_id => gateway_id}
+  def JOINING_NETWORK_RELAY(node_id, target_id, gateway_id)
+    message = {:type => 'JOINING_NETWORK_RELAY', :node_id => node_id, :target_id => target_id, :gateway_id => gateway_id}
     return message.to_json
   end
 

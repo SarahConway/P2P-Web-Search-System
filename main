@@ -32,11 +32,11 @@ socket = UDPSocket.new                       # Create new socket
 socket.bind('127.0.0.1', options[:port])     # Bind socket to port
 #socket.close
 
-p1 = Peer.new(options[:node_id], options[:port])
-p1.init(socket)
-p1.joinNetwork(options[:bootstrap_ip], options[:node_id], 0)
+p1 = Peer.new()
+p1.init(socket, options[:port])
+p1.joinNetwork(options[:bootstrap_ip], options[:node_id], 'tortoise')
 
-#sleep(15)      # Sleep for two seconds
+#sleep(5)      # Sleep for two seconds
 puts('POOP')
 #p1.leaveNetwork(options[:node_id])
 $t1.join

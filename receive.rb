@@ -1,11 +1,12 @@
 require 'json'
+require './peer'
 
 class Receive
 
-  def initialize(socket, msg, id, port, rt, index)
+  def initialize(socket, msg, port, rt, index)
     @socket = socket
     @msg = msg
-    @id = id
+    @id = $id
     @port = port
     @rt = rt
     @index = index
@@ -29,17 +30,20 @@ class Receive
         puts('JOINING_NETWORK')
 
         # Reply with ROUTING_INFO
-        @socket.send @msg.ROUTING_INFO(@id, received['node_id'], @port ,@rt.routing_table), 0, '127.0.0.1', received['ip_address']
+        @socket.send @msg.ROUTING_INFO(@id, received['node_id'], @port , @rt.getRoutingTableToSend(@port)), 0, '127.0.0.1', received['ip_address']
 
         # Put joining node in routing table
         @rt.updateRoutingTable(received['node_id'], received['ip_address'])
+        #puts('ROUTING')
+        #puts(@rt.routing_table)
 
         # Find suitable node and forward JOINING_NETWORK_RELAY
         if @rt.routing_table.length > 0
-          closest_node_ip = @rt.findCloserNode(@id, received['node_id'])
+          closest_node_ip = @rt.findCloserNode(received['target_id'], received['node_id'])
           if closest_node_ip != nil
-            puts('sending JOINING_NETWORK_RELAY')
-            @socket.send @msg.JOINING_NETWORK_RELAY(received['node_id'], @id), 0, '127.0.0.1', closest_node_ip
+            puts('sending JOINING_NETWORK_RELAY to')
+            puts(closest_node_ip)
+            @socket.send @msg.JOINING_NETWORK_RELAY(received['node_id'], received['target_id'], @id), 0, '127.0.0.1', closest_node_ip
           end
         end
 
@@ -47,16 +51,22 @@ class Receive
         puts('JOINING_NETWORK_RELAY')
         # If not target, forward JOINING_NETWORK_RELAY
         if received['node_id'] != @id
-          closest_node_ip = @rt.findCloserNode(@id, received['node_id'])
+          closest_node_ip = @rt.findCloserNode(received['target_id'], received['node_id'])
           if !closest_node_ip.nil?
-          @socket.send msg.JOINING_NETWORK_RELAY(received['node_id', received['gateway_id']]), 0, '127.0.0.1', closest_node_ip
+            puts('sending JOINING_NETWORK_RELAY to')
+            puts(closest_node_ip)
+            @socket.send @msg.JOINING_NETWORK_RELAY(received['node_id'], received['target_id'], received['gateway_id']), 0, '127.0.0.1', closest_node_ip
           end
         end
-        # Send ROUTING_INFO to gateway node
 
-        closest_node_ip = @rt.findCloserNode(@id, received['node_id'])
+        # Send ROUTING_INFO to gateway node
+        closest_node_ip = @rt.findCloserNode(received['gateway_id'], received['node_id'])
+        puts('CLOSEST')
+        puts(closest_node_ip)
         if !closest_node_ip.nil?
-          @socket.send msg.ROUTING_INFO(received['gateway_id'], received['node_id'], @port, @rt.routing_table), 0, '127.0.0.1', closest_node_ip
+          puts('sending ROUTING_INFO to')
+          puts(closest_node_ip)
+          @socket.send @msg.ROUTING_INFO(received['gateway_id'], received['gateway_id'], @port, @rt.getRoutingTableToSend(@port)), 0, '127.0.0.1', closest_node_ip
         end
 
       when 'ROUTING_INFO'
