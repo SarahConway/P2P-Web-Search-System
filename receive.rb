@@ -24,7 +24,9 @@ class Receive
     while true
       begin
         received_data = p @socket.recv(1000)      # Receive
-        respond(JSON.parse(received_data))        # Determine how to respond to received and parsed message
+        Thread.new do
+          respond(JSON.parse(received_data))        # Determine how to respond to received and parsed message
+        end
       rescue Errno::ECONNRESET
         puts('Connection to remote host failed')
       end
@@ -111,22 +113,23 @@ class Receive
         if received['target_id'] == @id     # If message is intended for this node
           # Store new index
           @index.addIndex(received['keyword'], received['link'])
+
+          # Respond with ACK_INDEX
+          time = Time.now
+          while Time.now - time < 5
+          end
+          closest_node_ip = @rt.findCloserNode(received['sender_id'], nil)
+          if !closest_node_ip.nil?
+            puts('sending ACK_INDEX to')
+            puts(closest_node_ip)
+            @socket.send @msg.ACK_INDEX(received['sender_id'], received['keyword']), 0, '127.0.0.1', closest_node_ip
+          end
+
         else                                                        # Send message closer to target
           closest_node_ip = @rt.findCloserNode(received['target_id'], nil)
           if !closest_node_ip.nil?
             @socket.send @msg.INDEX(received['target_id'], received['sender_id'], received['keyword'], received['link']), 0, '127.0.0.1', closest_node_ip
           end
-        end
-
-        # Respond with ACK_INDEX
-        time = Time.now
-        while Time.now - time < 5
-        end
-        closest_node_ip = @rt.findCloserNode(received['sender_id'], nil)
-        if !closest_node_ip.nil?
-          puts('sending ACK_INDEX to')
-          puts(closest_node_ip)
-          @socket.send @msg.ACK_INDEX(received['sender_id'], received['keyword']), 0, '127.0.0.1', closest_node_ip
         end
 
       when 'SEARCH'
@@ -172,10 +175,15 @@ class Receive
         @socket.send @msg.ACK(received['target_id'], @port), 0, '127.0.0.1', received['ip_address']
 
         # Send PING to next node if not final target
-        if received['node_id'] != @id
-          closest_node_ip = @rt.findCloserNode(received['node_id'], nil)
+        if received['target_id'] != @id
+
+          closest_node_ip = @rt.findCloserNode(received['target_id'], nil)
           if !closest_node_ip.nil?
-            @socket.send @msg.PING(received['target_id'], received['sender_id'], @port), 0, '127.0.0.1', received['ip_address']
+
+            puts('forwarding PING to')
+            puts(closest_node_ip)
+
+            @socket.send @msg.PING(received['target_id'], received['sender_id'], @port), 0, '127.0.0.1', closest_node_ip
             @pinged_ip = closest_node_ip
 
             # Wait up to 10s for ACK
@@ -185,6 +193,7 @@ class Receive
 
             # If no ACK received delete node from routing table
             if !@ack_received
+              puts('deleting')
               @rt.deleteRoutingTableEntry(@rt.routing_table.detect{|x| x[:ip_address == closest_node_ip]}[:node_id])
             else
               @ack_received = false

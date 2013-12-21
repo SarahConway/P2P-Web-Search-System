@@ -32,14 +32,14 @@ socket.bind('127.0.0.1', options[:port])     # Bind socket to port
 
 p1 = Peer.new()
 p1.init(socket, options[:port])
-p1.joinNetwork(options[:bootstrap_ip], options[:node_id], 'd')
+p1.joinNetwork(options[:bootstrap_ip], options[:node_id], 'b')
 
-#sleep(5)      # Sleep for two seconds
+sleep(5)      # Sleep for two seconds
 
 #p1.leaveNetwork(0)
 
 #=begin
-#p1.indexPage('www.growl.com', ['b', 'c', 'd', 'e'])
+p1.indexPage('www.growl.com', ['b', 'c', 'd', 'e'])
 #p1.indexPage('www.antelope.com', ['e', 'c', 'd', 'b'])
 #p1.indexPage('www.antelope.com', ['e', 'c', 'd', 'b'])
 #p1.indexPage('www.toe.com', ['e', 'd', 'b'])
