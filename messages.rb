@@ -46,4 +46,9 @@ class Messages
     message = {:type => 'ACK', :node_id => node_id, :ip_address => ip_address}
     return message.to_json
   end
+
+  def ACK_INDEX(node_id, keyword)
+    message = {:type => 'ACK_INDEX', :node_id => node_id, :keyword => keyword}
+    return message.to_json
+  end
 end

@@ -5,7 +5,6 @@ require 'pp'
 require 'thread'
 require './peer'
 
-#n = Thread.new do
 options = {}
 option_parser = OptionParser.new do |opts|
   opts.banner = 'Usage: main.rb [options]'
@@ -30,24 +29,23 @@ option_parser.parse!
 
 socket = UDPSocket.new                       # Create new socket
 socket.bind('127.0.0.1', options[:port])     # Bind socket to port
-#socket.close
 
 p1 = Peer.new()
 p1.init(socket, options[:port])
-p1.joinNetwork(options[:bootstrap_ip], options[:node_id], 'c')
+p1.joinNetwork(options[:bootstrap_ip], options[:node_id], 'd')
 
-sleep(5)      # Sleep for two seconds
-puts('POOP')
-#p1.leaveNetwork(options[:node_id])
+#sleep(5)      # Sleep for two seconds
+
+#p1.leaveNetwork(0)
 
 #=begin
-p1.indexPage('www.growl.com', ['b', 'c', 'd', 'e'])
-p1.indexPage('www.antelope.com', ['e', 'c', 'd', 'b'])
-p1.indexPage('www.antelope.com', ['e', 'c', 'd', 'b'])
-p1.indexPage('www.toe.com', ['e', 'd', 'b'])
-p1.indexPage('www.antelope.com', ['e', 'c', 'b'])
-p1.indexPage('www.toe.com', ['c', 'd', 'b'])
-p1.indexPage('www.tiger.com', ['c'])
+#p1.indexPage('www.growl.com', ['b', 'c', 'd', 'e'])
+#p1.indexPage('www.antelope.com', ['e', 'c', 'd', 'b'])
+#p1.indexPage('www.antelope.com', ['e', 'c', 'd', 'b'])
+#p1.indexPage('www.toe.com', ['e', 'd', 'b'])
+#p1.indexPage('www.antelope.com', ['e', 'c', 'b'])
+#p1.indexPage('www.toe.com', ['c', 'd', 'b'])
+#p1.indexPage('www.tiger.com', ['c'])
 
 #p1.search(['c'])
 #=end
