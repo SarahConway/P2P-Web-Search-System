@@ -2,6 +2,7 @@ P2P-Web-Search-System
 =====================
 
 Name: Sarah Conway
+
 Student Number: 09408223
 
 The spec was slightly altered to allow testing on a local machine.  In a proper system messages would be sent to a
