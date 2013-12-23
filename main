@@ -40,14 +40,16 @@ sleep(5)      # Sleep for two seconds
 
 #=begin
 p1.indexPage('www.growl.com', ['b', 'c', 'd', 'e'])
-#p1.indexPage('www.antelope.com', ['e', 'c', 'd', 'b'])
-#p1.indexPage('www.antelope.com', ['e', 'c', 'd', 'b'])
-#p1.indexPage('www.toe.com', ['e', 'd', 'b'])
-#p1.indexPage('www.antelope.com', ['e', 'c', 'b'])
-#p1.indexPage('www.toe.com', ['c', 'd', 'b'])
-#p1.indexPage('www.tiger.com', ['c'])
+p1.indexPage('www.antelope.com', ['e', 'c', 'd', 'b'])
+p1.indexPage('www.antelope.com', ['e', 'c', 'd', 'b'])
+p1.indexPage('www.owl.com', ['e', 'd', 'b'])
+p1.indexPage('www.antelope.com', ['e', 'c', 'b'])
+p1.indexPage('www.owl.com', ['c', 'd', 'b'])
+p1.indexPage('www.tiger.com', ['c'])
 
-#p1.search(['c'])
+p1.search(['d'])
+sleep(1)
+p1.search(['c'])
 #=end
 
 $t1.join
