@@ -1,3 +1,5 @@
+# Author - Sarah Conway
+
 require 'json'
 require 'socket'
 require 'optparse'
